@@ -1,5 +1,38 @@
-SELECT
+---  Tableau User Group Project View ---
 
+select distinct
+  p.site_id SITE_ID,
+  g.site_name SITE_NAME,
+  p.id PROJECT_ID,
+  p.name PROJECT_NAME,
+  pp.name PARENT_PROJECT_FOLDER,
+  g.name GROUP_NAME,
+  u.id TABLEAU_USER_ID,
+  u.friendly_name USER_NAME,
+  u.name USER_NAME_SHORT,
+  uv.email EMAIL,
+  uv.login_at LAST_LOGIN_AT
+from
+  permissions_templates pt
+  join projects p
+    on pt.project_id = p.id
+  left join projects pp
+    on p.parent_project_id = pp.id
+  join group_users gu
+    on pt.grantee_id = gu.group_id
+  join _users u
+    on gu.user_id = u.id
+  join users_view uv
+    on u.id = uv.id
+  join _groups g
+    on gu.group_id = g.id
+where
+  pt.project_id != '56'  -- exclude Tableau Default Projects
+;
+
+
+--- Tableau Views by Project ---
+SELECT
   s.id AS site_id,
   s.name AS site_name,
   wb.project_id AS project_id,
@@ -37,5 +70,5 @@ FROM
     ON vs.views_workbook_id = wb.id
   JOIN public._sites s
     on wb.site_id = s.id
-where wb.project_id != '56'
+where wb.project_id != '56'  -- exclude Tableau Default Projects
 limit 100;
