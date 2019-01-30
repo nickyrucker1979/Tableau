@@ -1,13 +1,13 @@
 ---  Tableau User Group Project View ---
 
 select distinct
-  p.site_id SITE_ID,
+  cast(p.site_id as TEXT) SITE_ID,
   g.site_name SITE_NAME,
-  p.id PROJECT_ID,
+  cast(p.id as TEXT) PROJECT_ID,
   p.name PROJECT_NAME,
   pp.name PARENT_PROJECT_FOLDER,
   g.name GROUP_NAME,
-  u.id TABLEAU_USER_ID,
+  cast(u.id as TEXT) TABLEAU_USER_ID,
   u.friendly_name USER_NAME,
   u.name USER_NAME_SHORT,
   uv.email EMAIL,
@@ -28,6 +28,7 @@ from
     on gu.group_id = g.id
 where
   pt.project_id != '56'  -- exclude Tableau Default Projects
+  and p.site_id = '17'  -- University Site Only
 ;
 
 
