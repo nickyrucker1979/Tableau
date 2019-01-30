@@ -34,23 +34,23 @@ where
 
 --- Tableau Views by Project ---
 SELECT
-  s.id AS site_id,
+  cast(s.id as text) AS site_id,
   s.name AS site_name,
-  wb.project_id AS project_id,
+  cast(wb.project_id as text) AS project_id,
   wb.project_name AS project_name,
-  wb.id AS workbook_id,
+  cast(wb.id as text) AS workbook_id,
   wb.name AS workbook_name,
   CAST(wb.workbook_url AS TEXT) AS workbook_url,
 --   wb.size AS workbook_size,
 --   wb.view_count AS workbook_view_count,
-  wb.owner_id AS workbook_owner_id,
+  cast(wb.owner_id as text) AS workbook_owner_id,
   wb.owner_name AS workbook_owner_name,
   wb.updated_at::timestamp at time zone 'UTC' at time zone 'MST' AS workbook_updated_at,
-  vs.views_id AS view_id,
+  cast(vs.views_id as text) AS view_id,
   vs.views_name AS view_name,
   CAST(vs.views_title AS TEXT) AS view_title,
   CAST(vs.views_url AS TEXT) AS view_url,
-  vs.users_id AS user_id,
+  cast(vs.users_id as text) AS user_id,
   vs.system_users_friendly_name AS user_name,
   vs.last_view_time::timestamp at time zone 'UTC' at time zone 'MST' AS user_last_viewed_date,
 --   CAST(vs.device_type AS TEXT) AS view_device_type,
@@ -71,5 +71,7 @@ FROM
     ON vs.views_workbook_id = wb.id
   JOIN public._sites s
     on wb.site_id = s.id
-where wb.project_id != '56'  -- exclude Tableau Default Projects
+where
+  s.id = '17'    -- University Site Only
+  and wb.project_id != '56'  -- exclude Tableau Default Projects
 limit 100;
